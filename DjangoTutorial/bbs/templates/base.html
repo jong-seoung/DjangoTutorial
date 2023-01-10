@@ -1,11 +1,42 @@
 <!DOCTYPE html>
 <html lang="ko">
     <head>
-        <title>base</title>
+        <!-- 페이지 별 타이틀 공간 -->
+        {% block title %}
+        <title>Django-Tutorial</title>
+        {% endblock title %}
+
+        <!-- 페이지 별 메타 데이터 공간 -->
+        {% block meta %}
+        {% endblock meta %}
+
+        <!-- 페이지 별 스크립트 공간 -->
+        {% block script %}
+        {% endblock script %}
+
+        <!-- 페이지 별 스크립트 공간 -->
+        {% block css %}
+        {% endblock css %}
     </head>
     <body>
-    view: {{ view }} <!-- ctx['view'] -->
-    <br>
-    data: {{ data }}  <!-- ctx['data'] -->
-    </body>
+        {% block header %}
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/article/">게시글 목록</a>
+                </div>
+            </div>
+        </nav>
+        {% if messages %}    <!-- 추가된 부분 시작 -->
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}          <!-- 추가된 부분 끝 -->
+        {% endblock header %}
+        
+        {% block content %}
+        {% endblock content %}
+        </body>
 </html>
