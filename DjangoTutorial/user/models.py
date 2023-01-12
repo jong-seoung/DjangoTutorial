@@ -34,7 +34,7 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField('email', unique=True)
+    email = models.EmailField('이메일 주소', unique=True)
     name = models.CharField('이름', max_length=30, blank=True)
     is_staff = models.BooleanField('스태프 권한', default=False)
     is_active = models.BooleanField('사용중', default=True)
