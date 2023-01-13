@@ -2,6 +2,8 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.views.generic import TemplateView
 from bbs.models import Article
 from django.contrib import messages
+from django.conf import settings
+
 
 # 게시글 목록
 class ArticleListView(TemplateView):
@@ -45,6 +47,7 @@ class ArticleDetailView(TemplateView):
 
 # 게시글 추가, 수정
 class ArticleCreateUpdateView(TemplateView):
+    login_url = settings.LOGIN_URL
     template_name = 'article_update.html'
     queryset = Article.objects.all()
     pk_url_kwargs = 'article_id'

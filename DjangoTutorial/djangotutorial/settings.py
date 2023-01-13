@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'user',
 ]
 
-AUTH_USER_MODEL = 'user.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,7 +123,13 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+AUTH_USER_MODEL = 'user.User'
+
+LOGIN_REDIRECT_URL = '/article/'  # 로그인이 되면 /article/로 이동
+
+LOGIN_URL = '/user/login/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
