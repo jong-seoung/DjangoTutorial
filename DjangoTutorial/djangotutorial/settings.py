@@ -128,6 +128,7 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'user.User'
 
 LOGIN_REDIRECT_URL = '/article/'  # 로그인이 되면 /article/로 이동
+LOGOUT_REDIRECT_URL = '/user/login/' # 로그아웃되면 이동 
 
 LOGIN_URL = '/user/login/'
 
@@ -135,3 +136,9 @@ LOGIN_URL = '/user/login/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'jjong015189@gmail.com'
+EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = True

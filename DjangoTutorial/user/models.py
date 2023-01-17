@@ -4,6 +4,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.core.mail import send_mail
 
 class UserManager(BaseUserManager):
     user_in_migrations = True
@@ -37,10 +38,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('이메일 주소', unique=True)
     name = models.CharField('이름', max_length=30, blank=True)
     is_staff = models.BooleanField('스태프 권한', default=False)
-    is_active = models.BooleanField('사용중', default=True)
+    is_active = models.BooleanField(_('active'), default=False)
     date_joined = models.DateTimeField('가입일', default=timezone.now)
 
-    object = UserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'email' # email을 사용자의 식별자로 고정
     REQUIRED_FIELDS = ['name'] # 필수입력값

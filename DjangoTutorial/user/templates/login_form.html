@@ -4,7 +4,7 @@
 {% block title %}<title>회원 가입</title>{% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+{{ block.super }}
 <style>
     .registration {
         width: 360px;
@@ -23,6 +23,7 @@
     .registration .form-actions > button {
         width: 100%;
     }
+    .link-below-button { margin-top: 10px; text-align: right;}
 </style>
 {% endblock css %}
 
@@ -46,6 +47,9 @@
             <div class="form-actions">
                 <button class="btn btn-primary btn-large" type="submit">로그인</button>
             </div>
+            <a href="/user/resend_verify_email/">
+                <div class="link-below-button">인증이메일 재발송</div>
+            </a>
         </form>
     </div>
 </div>
