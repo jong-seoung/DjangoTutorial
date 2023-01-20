@@ -1,15 +1,11 @@
-<!-- bbs/templates/article_list.html -->
-
-
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}<title>게시글 목록</title>{% endblock title %}
 
 {% block css %}
 {{ block.super }}
-<style type="text/css">
-    tbody > tr {cursor: pointer;}
-</style>
+<link rel="stylesheet" href="{% static 'css/bbs.css' %}">
 {% endblock css %}
 
 {% block content %}
@@ -19,13 +15,12 @@
     </thead>
     <tbody>
         {% for article in articles %}
-        <tr onclick="location.href='/article/{{ article.pk }}/'">  <!-- 테이블 행 click 시 url 이동 -->
+        <tr onclick="location.href='/article/{{ article.pk }}/'">
             <td>{{ article.pk }}</td><td>{{ article.title }}</td><td>{{ article.author }}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
-<!-- 버튼 click 시 url 이동 -->
 <a href="/article/create/"><button class="btn btn-primary" type="button">새 게시글 작성</button></a>
 {% endblock content %}

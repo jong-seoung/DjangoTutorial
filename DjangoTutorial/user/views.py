@@ -14,7 +14,7 @@ from django.views.generic import CreateView, FormView
 
 
 class UserRegistrationView(VerifyEmailMixin, CreateView):
-    template_name = 'user_model.html'
+    template_name = 'registration_form.html'
     model = get_user_model()
     form_class = UserRegistrationForm
     success_url = '/user/login/'
@@ -61,7 +61,7 @@ class ResendVerifyEmailView(VerifyEmailMixin, FormView):
     model = get_user_model()
     form_class = VerificationEmailForm
     success_url = '/user/login/'
-    template_name = 'resend_verify_email.html'
+    template_name = 'resend_verify_form.html'
 
     def form_valid(self, form):
         email = form.cleaned_data['email']

@@ -123,7 +123,16 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
+
+STATIC_ROOT = "/DjangoTutorial/DjangoTutorial/static"
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, '/DjangoTutorial/DjangoTutorial/bbs/static'),
+    os.path.join(BASE_DIR, '/DjangoTutorial/DjangoTutorial/user/static'),
+)
+
+STATICFILES_FINDERS = ['django.contrib.staticfiles.finders.FileSystemFinder','django.contrib.staticfiles.finders.AppDirectoriesFinder']
 
 AUTH_USER_MODEL = 'user.User'
 

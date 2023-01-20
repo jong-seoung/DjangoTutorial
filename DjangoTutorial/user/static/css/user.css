@@ -1,0 +1,26 @@
+.user-panel {
+    width: 360px;
+    margin: 0 auto;
+}
+.registration {
+    width: 360px;
+    margin: 0 auto;
+}
+.registration .form-actions > button {
+    width: 100%;
+}
+p {
+    text-align: center;
+}
+label {
+    width: 50%;
+    text-align: left;
+}
+.control-label {
+    width: 100%;
+}
+.user-panel .form-actions > button {
+    width: 100%;
+}
+.link-below-button { margin-top: 10px; text-align: right;}
+
