@@ -155,3 +155,8 @@ EMAIL_USE_TLS = True
 # 소셜 로그인
 NAVER_CLIENT_ID = 'WtaECQMXs_Y5B3CVhI0b'
 NAVER_SECRET_KEY = get_secret("NAVER_SECRET_KEY")
+
+AUTHENTICATION_BACKENDS = [
+    'user.oauth.backends.NaverBackend',           # 네이버 인증백엔드
+    'django.contrib.auth.backends.ModelBackend'
+]

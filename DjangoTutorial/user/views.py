@@ -7,16 +7,15 @@ from django.contrib.auth.tokens import default_token_generator
 from djangotutorial import settings
 from django.http import HttpResponseRedirect
 from django.views.generic.base import TemplateView
-from django.shortcuts import render
 from user.mixins import VerifyEmailMixin
 
 from django.views.generic import CreateView, FormView
 
 # 소셜 로그인
-# from django.conf import settings
-# from django.views.generic.base import TemplateView, View
-# from django.middleware.csrf import _compare_salted_tokens
-# from user.oauth.providers.naver import NaverLoginMixin
+from django.conf import settings
+from django.views.generic.base import TemplateView, View
+from django.middleware.csrf import _compare_masked_tokens
+from user.oauth.providers.naver import NaverLoginMixin
 
 
 class UserRegistrationView(VerifyEmailMixin, CreateView):
@@ -79,35 +78,32 @@ class ResendVerifyEmailView(VerifyEmailMixin, FormView):
             self.send_verification_email(user)
         return super().form_valid(form)
 
-# user/views.py
+class SocialLoginCallbackView(NaverLoginMixin, View):
 
+    success_url = settings.LOGIN_REDIRECT_URL
+    failure_url = settings.LOGIN_URL
+    required_profiles = ['email', 'name']
 
-# 생략
+    model = get_user_model()
 
-# class SocialLoginCallbackView(NaverLoginMixin, View):
+    def get(self, request, *args, **kwargs):
 
-#     success_url = settings.LOGIN_REDIRECT_URL
-#     failure_url = settings.LOGIN_URL
-#     required_profiles = ['email', 'name']
-#     model = get_user_model()
+        provider = kwargs.get('provider')
+        success_url = request.GET.get('next', self.success_url)
 
-#     def get(self, request, *args, **kwargs):
+        if provider == 'naver':
+            csrf_token = request.GET.get('state')
+            code = request.GET.get('code')
+            if not _compare_masked_tokens(csrf_token, request.COOKIES.get('csrftoken')):
+                messages.error(request, '잘못된 경로로 로그인하셨습니다.', extra_tags='danger')
+                return HttpResponseRedirect(self.failure_url)
+            is_success, error = self.login_with_naver(csrf_token, code)
+            if not is_success:
+                messages.error(request, error, extra_tags='danger')
+            return HttpResponseRedirect(success_url if is_success else self.failure_url + '?reprompt=true')
 
-#         provider = kwargs.get('provider')
+        return HttpResponseRedirect(self.failure_url)
 
-#         if provider == 'naver': # 프로바이더가 naver 일 경우
-#             csrf_token = request.GET.get('state')
-#             code = request.GET.get('code')
-#             if not _compare_salted_tokens(csrf_token, request.COOKIES.get('csrftoken')): # state(csrf_token)이 잘못된 경우
-#                 messages.error(request, '잘못된 경로로 로그인하셨습니다.', extra_tags='danger')
-#                 return HttpResponseRedirect(self.failure_url)
-#             is_success, error = self.login_with_naver(csrf_token, code)
-#             if not is_success: # 로그인 실패할 경우
-#                 messages.error(request, error, extra_tags='danger')
-#             return HttpResponseRedirect(self.success_url if is_success else self.failure_url)
-
-#         return HttpResponseRedirect(self.failure_url)
-
-#     def set_session(self, **kwargs):
-#         for key, value in kwargs.items():
-#             self.request.session[key] = value
+    def set_session(self, **kwargs):
+        for key, value in kwargs.items():
+            self.request.session[key] = value

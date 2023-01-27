@@ -2,6 +2,35 @@ from django.conf import settings
 from django.contrib.auth import login
 import requests
 
+class NaverClient:
+    client_id = settings.NAVER_CLIENT_ID
+    secret_key = settings.NAVER_SECRET_KEY
+    grant_type = 'authorization_code'
+
+    auth_url = 'https://nid.naver.com/oauth2.0/token'
+    profile_url = 'https://openapi.naver.com/v1/nid/me'
+
+    __instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not isinstance(cls.__instance, cls):
+            cls.__instance = super().__new__(cls, *args, **kwargs)
+        return cls.__instance
+
+    def get_access_token(self, state, code):
+        res = requests.get(self.auth_url, params={'client_id': self.client_id, 'client_secret': self.secret_key,
+                                                    'grant_type': self.grant_type, 'state': state, 'code': code})
+
+        return res.ok, res.json()
+
+    def get_profile(self, access_token, token_type='Bearer'):
+        res = requests.get(self.profile_url, headers={'Authorization': '{} {}'.format(token_type, access_token)}).json()
+
+        if res.get('resultcode') != '00':
+            return False, res.get('message')
+        else:
+            return True, res.get('response')
+
 class NaverLoginMixin:
     naver_client = NaverClient()
 
@@ -52,31 +81,3 @@ class NaverLoginMixin:
         return True, profiles
 
 
-class NaverClient:
-    client_id = settings.NAVER_CLIENT_ID
-    secret_key = settings.NAVER_SECRET_KEY
-    grant_type = 'authorization_code'
-
-    auth_url = 'https://nid.naver.com/oauth2.0/token'
-    profile_url = 'https://openapi.naver.com/v1/nid/me'
-
-    __instance = None
-
-    def __new__(cls, *args, **kwargs):
-        if not isinstance(cls.__instance, cls):
-            cls.__instance = super().__new__(cls, *args, **kwargs)
-        return cls.__instance
-
-    def get_access_token(self, state, code):
-        res = requests.get(self.auth_url, params={'client_id': self.client_id, 'client_secret': self.secret_key,
-                                                    'grant_type': self.grant_type, 'state': state, 'code': code})
-
-        return res.ok, res.json()
-
-    def get_profile(self, access_token, token_type='Bearer'):
-        res = requests.get(self.profile_url, headers={'Authorization': '{} {}'.format(token_type, access_token)}).json()
-
-        if res.get('resultcode') != '00':
-            return False, res.get('message')
-        else:
-            return True, res.get('response')

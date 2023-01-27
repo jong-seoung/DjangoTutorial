@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from bbs.models import Article
 from django.contrib import messages
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # 게시글 목록
@@ -11,16 +12,10 @@ class ArticleListView(TemplateView):
     queryset = Article.objects.all()
 
     def get(self, request, *args, **kwargs):
-        print(request.GET)
         ctx = {
             'articles':self.queryset
         }
         return self.render_to_response(ctx)
-
-    def get_queryset(self):
-        if not self.queryset:
-            self.queryset = Article.objects.all()
-        return self.queryset
 
 # 게시글 상세
 class ArticleDetailView(TemplateView):
@@ -46,7 +41,7 @@ class ArticleDetailView(TemplateView):
         return self.render_to_response(ctx)
 
 # 게시글 추가, 수정
-class ArticleCreateUpdateView(TemplateView):
+class ArticleCreateUpdateView(LoginRequiredMixin, TemplateView):
     login_url = settings.LOGIN_URL
     template_name = 'article_update.html'
     queryset = Article.objects.all()
@@ -57,10 +52,12 @@ class ArticleCreateUpdateView(TemplateView):
         pk = self.kwargs.get(self.pk_url_kwargs)
         article = queryset.filter(pk=pk).first()
 
-        if pk and not article:
-            raise Http404('invalid pk')
+        if pk:
+            if not article:
+                raise Http404('invalid pk')
+            elif article.author != self.request.user:                             # 작성자가 수정하려는 사용자와 다른 경우
+                raise Http404('invalid user')
         return article
-
     def get(self, request, *args, **kwargs):
         article = self.get_object()
 

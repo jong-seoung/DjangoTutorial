@@ -5,11 +5,11 @@ function buildUrl(baseUrl, queries) {
     return baseUrl + '?' + buildQuery(queries)
 }
 
-function naverLogin() { // 네이버 로그인
+function naverLogin() {
     params = {
         response_type: 'code',
         client_id:'WtaECQMXs_Y5B3CVhI0b',
-        redirect_uri: location.origin + '/user/login/social/naver/callback/',
+        redirect_uri: location.origin + '/user/login/social/naver/callback/' + location.search,
         state: document.querySelector('[name=csrfmiddlewaretoken]').value
     }
     url = buildUrl('https://nid.naver.com/oauth2.0/authorize', params)
