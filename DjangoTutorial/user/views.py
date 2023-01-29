@@ -83,7 +83,7 @@ class SocialLoginCallbackView(NaverLoginMixin, View):
     success_url = settings.LOGIN_REDIRECT_URL
     failure_url = settings.LOGIN_URL
     required_profiles = ['email', 'name']
-
+    
     model = get_user_model()
 
     def get(self, request, *args, **kwargs):
@@ -91,16 +91,16 @@ class SocialLoginCallbackView(NaverLoginMixin, View):
         provider = kwargs.get('provider')
         success_url = request.GET.get('next', self.success_url)
 
-        if provider == 'naver':
+        if provider == 'naver': # 프로바이더가 naver 일 경우
             csrf_token = request.GET.get('state')
             code = request.GET.get('code')
-            if not _compare_masked_tokens(csrf_token, request.COOKIES.get('csrftoken')):
+            if not _compare_masked_tokens(csrf_token, request.COOKIES.get('csrftoken')): # state(csrf_token)이 잘못된 경우
                 messages.error(request, '잘못된 경로로 로그인하셨습니다.', extra_tags='danger')
                 return HttpResponseRedirect(self.failure_url)
             is_success, error = self.login_with_naver(csrf_token, code)
-            if not is_success:
+            if not is_success: # 로그인 실패할 경우
                 messages.error(request, error, extra_tags='danger')
-            return HttpResponseRedirect(success_url if is_success else self.failure_url + '?reprompt=true')
+            return HttpResponseRedirect(success_url if is_success else self.failure_url)
 
         return HttpResponseRedirect(self.failure_url)
 

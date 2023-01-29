@@ -138,7 +138,6 @@ AUTH_USER_MODEL = 'user.User'
 
 LOGIN_REDIRECT_URL = '/article/'  # 로그인이 되면 /article/로 이동
 LOGOUT_REDIRECT_URL = '/user/login/' # 로그아웃되면 이동 
-
 LOGIN_URL = '/user/login/'
 
 # Default primary key field type

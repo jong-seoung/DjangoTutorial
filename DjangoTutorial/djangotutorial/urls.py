@@ -17,8 +17,8 @@ urlpatterns = [
 
     path('user/create/', UserRegistrationView.as_view()), # 회원가입
     path('user/<pk>/verify/<token>/', UserVerificationView.as_view()), # 인증
-    path('user/resend_verify_email/', ResendVerifyEmailView.as_view()),
+    path('user/resend_verify_email/', ResendVerifyEmailView.as_view()), # 이메일 재 인증
     path('user/login/', UserLoginView.as_view()),         # 로그인
     path('user/logout/', LogoutView.as_view()),    # 로그아웃
-    path('user/login/social/<provider>/callback/', SocialLoginCallbackView.as_view()),
+    path('user/login/social/<provider>/callback/', SocialLoginCallbackView.as_view()), # 소셜로그인
 ]
