@@ -4,7 +4,7 @@ from bbs.models import Article
 from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from datetime import datetime
 
 # 게시글 목록
 class ArticleListView(TemplateView):
@@ -46,7 +46,7 @@ class ArticleCreateUpdateView(LoginRequiredMixin, TemplateView):
     template_name = 'article_update.html'
     queryset = Article.objects.all()
     pk_url_kwargs = 'article_id'
-
+    
     def get_object(self, queryset=None):
         queryset = queryset or self.queryset
         pk = self.kwargs.get(self.pk_url_kwargs)
@@ -55,7 +55,7 @@ class ArticleCreateUpdateView(LoginRequiredMixin, TemplateView):
         if pk:
             if not article:
                 raise Http404('invalid pk')
-            elif article.author != self.request.user:                             # 작성자가 수정하려는 사용자와 다른 경우
+            elif article.author != self.request.user:                             # 작성자가 수정하려는 사용자와 다른 경우 
                 raise Http404('invalid user')
         return article
     def get(self, request, *args, **kwargs):
@@ -68,7 +68,12 @@ class ArticleCreateUpdateView(LoginRequiredMixin, TemplateView):
 
     def post(self, request, *args, **kwargs):
         action = request.POST.get('action')
-        post_data = {key: request.POST.get(key) for key in ('title', 'content', 'author')}
+        now = datetime.now()
+
+        post_data = {key: request.POST.get(key) for key in ('title', 'content')}
+        post_data['author'] = self.request.user
+        post_data['created_at'] = now.strftime('%Y-%m-%d %H:%M:%S')
+        print(post_data)
         for key in post_data:
             if not post_data[key]:
                 messages.error(self.request, '{} 값이 존재하지 않습니다.'.format(key), extra_tags='danger')
@@ -82,7 +87,7 @@ class ArticleCreateUpdateView(LoginRequiredMixin, TemplateView):
                 for key, value in post_data.items():
                     setattr(article, key, value)
                 article.save()
-                messages.success(self.request, '게시글이 저장되었습니다.')
+                messages.success(self.request, '게시글이 수정되었습니다.')
             else:
                 messages.error(self.request, '알 수 없는 요청입니다.', extra_tags='danger')
 
